@@ -8,6 +8,6 @@ package ceccimassimitaas.repository;
  *
  * @author cecci.giulia
  */
-public class TombolateRepository {
+public class PartecipazioneRepositoryImpl {
     
 }
