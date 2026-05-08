@@ -4,10 +4,27 @@
  */
 package ceccimassimitaas.repository;
 
+import ceccimassimitaas.model.Tombolata;
+import java.util.List;
+import java.util.Optional;
 /**
  *
  * @author cecci.giulia
  */
 public class TombolataRepository {
-    
+/** Inserisce un nuovo record e imposta l'id generato sull'oggetto */
+    void               save(Tombolata a) throws Exception;
+
+    /** Legge tutti i record */
+    List<Tombolata>   findAll()        throws Exception;
+
+    /** Cerca per id; ritorna Optional.empty() se non trovato */
+    Optional<Tombolata> findById(int id) throws Exception;
+
+    /** Aggiorna nome, cognome e anno di un record esistente */
+    void               update(Tombolata a) throws Exception;
+
+    /** Cancella il record con l'id specificato */
+    void               deleteById(int id) throws Exception;
+
 }

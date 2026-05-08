@@ -27,4 +27,4 @@ public class ConnectionManager {
 
     // Classe di sola utilità: costruttore privato
     private ConnectionManager() {}
-}
+}                                                                                                                                
