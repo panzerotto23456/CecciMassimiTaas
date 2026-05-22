@@ -11,9 +11,9 @@ import java.util.Optional;
  *
  * @author cecci.giulia
  */
-public class TombolataRepository {
-/** Inserisce un nuovo record e imposta l'id generato sull'oggetto */
-    void               save(Tombolata a) throws Exception;
+public interface  TombolataRepository {
+    // Inserisce una nuova tombolata 
+    void               save(Tombolata t) throws Exception;
 
     /** Legge tutti i record */
     List<Tombolata>   findAll()        throws Exception;
@@ -22,7 +22,7 @@ public class TombolataRepository {
     Optional<Tombolata> findById(int id) throws Exception;
 
     /** Aggiorna nome, cognome e anno di un record esistente */
-    void               update(Tombolata a) throws Exception;
+    void               updateStato(Tombolata a) throws Exception;
 
     /** Cancella il record con l'id specificato */
     void               deleteById(int id) throws Exception;

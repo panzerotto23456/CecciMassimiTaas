@@ -8,89 +8,56 @@ package ceccimassimitaas.repository;
 import ceccimassimitaas.db.ConnectionManager;
 import ceccimassimitaas.model.Tombolata;
 
+
 import java.sql.*;
 import java.util.*;
 /**
  *
  * @author cecci.giulia
  */
-public class TombolataRepositoryImpl {
+public class TombolataRepositoryImpl implements TombolataRepository{
+    
     // ── Query SQL come costanti ────────────────────────────────────────
     private static final String INSERT =
-        "INSERT INTO anagrafica (nome, cognome, anno_nascita) VALUES (?, ?, ?)";
-    private static final String SELECT_ALL =
-        "SELECT id, nome, cognome, anno_nascita FROM anagrafica ORDER BY cognome, nome";
-    private static final String SELECT_BY_ID =
-        "SELECT id, nome, cognome, anno_nascita FROM anagrafica WHERE id = ?";
+        "INSERT INTO taas_tombolate (tom_data, tom_sede, tom_stato) VALUES (?, ?, ?)";
     private static final String UPDATE =
-        "UPDATE anagrafica SET nome = ?, cognome = ?, anno_nascita = ? WHERE id = ?";
+        "UPDATE taas_tombolate SET tom_stato = ? WHERE tom_id = ?";
     private static final String DELETE =
-        "DELETE FROM anagrafica WHERE id = ?";
+        "DELETE FROM taas_tombolate WHERE tom_id = ?";
 
     // ── SAVE (INSERT) ─────────────────────────────────────────────────
     @Override
-    public void save(Tombolata a) throws Exception {
+    public void save(Tombolata t) throws Exception {
         // try-with-resources chiude automaticamente Connection e Statement
         try (Connection        conn = ConnectionManager.getConnection();
              PreparedStatement ps   = conn.prepareStatement(INSERT,
                                             Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, a.getNome());
-            ps.setString(2, a.getCognome());
-            ps.setInt   (3, a.getAnnoNascita());
+            ps.setDate(1, new java.sql.Date(t.getTom_data().getTime())); //converto perchè sono due format di date diversi
+            ps.setString(2, t.getTom_sede());
+            ps.setString   (3, t.getTom_stato().toString());
             ps.executeUpdate();
 
             // Recuperiamo l'id auto-generato dal DB
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
-                    a.setId(keys.getInt(1));
+                    t.setTom_id(keys.getInt(1));
                 }
             }
         }
     }
+   
 
-    // ── FIND ALL (SELECT) ─────────────────────────────────────────────
-    @Override
-    public List<Tombolata> findAll() throws Exception {
-        List<Tombolata> result = new ArrayList<>();
-
-        try (Connection        conn = ConnectionManager.getConnection();
-             PreparedStatement ps   = conn.prepareStatement(SELECT_ALL);
-             ResultSet         rs   = ps.executeQuery()) {
-
-            while (rs.next()) {
-                result.add(mapRow(rs));   // metodo di mapping riusabile
-            }
-        }
-        return result;
-    }
-
-    // ── FIND BY ID ────────────────────────────────────────────────────
-    @Override
-    public Optional<Tombolata> findById(int id) throws Exception {
-        try (Connection        conn = ConnectionManager.getConnection();
-             PreparedStatement ps   = conn.prepareStatement(SELECT_BY_ID)) {
-
-            ps.setInt(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next()
-                    ? Optional.of(mapRow(rs))
-                    : Optional.empty();
-            }
-        }
-    }
 
     // ── UPDATE ────────────────────────────────────────────────────────
     @Override
-    public void update(Tombolata a) throws Exception {
+    public void updateStato(Tombolata t) throws Exception {
         try (Connection        conn = ConnectionManager.getConnection();
              PreparedStatement ps   = conn.prepareStatement(UPDATE)) {
+            
 
-            ps.setString(1, a.getNome());
-            ps.setString(2, a.getCognome());
-            ps.setInt   (3, a.getAnnoNascita());
-            ps.setInt   (4, a.getId());
+            ps.setString(1, t.getTom_stato().nextStatus().toString());
+            ps.setInt   (2, t.getTom_id());
             ps.executeUpdate();
         }
     }
@@ -109,10 +76,10 @@ public class TombolataRepositoryImpl {
     // ── HELPER: mappa una riga del ResultSet in un oggetto ────────────
     private Tombolata mapRow(ResultSet rs) throws SQLException {
         return new Tombolata(
-            rs.getInt   ("id"),
-            rs.getString("nome"),
-            rs.getString("cognome"),
-            rs.getInt   ("anno_nascita")
+            rs.getInt   ("tom_id"),
+            rs.getDate("tom_data"),
+            rs.getString("tom_sede"),
+            rs.getString  ("tom_stato")
         );
     }
 }

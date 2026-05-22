@@ -13,4 +13,10 @@ public enum StatoTombolata {
     APERTA,
     ATTIVA,
     TERMINATA;
+    
+    
+    public StatoTombolata nextStatus(){
+        StatoTombolata[] valori = values();
+        return valori[this.ordinal()+1];
+    }
 }

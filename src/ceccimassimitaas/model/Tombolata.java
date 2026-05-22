@@ -25,7 +25,7 @@ public class Tombolata {
         this.tom_stato = tom_stato;
     }
 
-    public Tombolata(Integer tom_id, Date tom_data, String tom_sede, StatoTombolata tom_stato) {
+    public Tombolata(Integer tom_id, Date tom_data, String tom_sede, StatoTombolata tom_stato ) {
         this.tom_id = tom_id;
         this.tom_data = tom_data;
         this.tom_sede = tom_sede;
@@ -63,6 +63,8 @@ public class Tombolata {
     public void setTom_stato(StatoTombolata tom_stato) {
         this.tom_stato = tom_stato;
     }
+
+    
 
     @Override
     public String toString() {
